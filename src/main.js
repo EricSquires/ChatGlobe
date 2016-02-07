@@ -14,7 +14,7 @@ function organizeData(chatData) {
 var container = document.getElementById( 'globe' );
 
 // Make the globe
-var globe = new DAT.Globe( container );
+var globe = new DAT.Globe( container, { imgDir: 'img/' } );
 
 // We're going to ask a file for the JSON data.
 var xhr = new XMLHttpRequest();
