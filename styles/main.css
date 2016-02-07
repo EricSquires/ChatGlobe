@@ -15,5 +15,5 @@ nav ul {
 }
 
 nav .active::before {
-  content: ">";
+  content: "> ";
 }
