@@ -40,39 +40,49 @@ function colorFunction(data) {
   return new THREE.Color(0xFF0000);
 }
 
-// Where to put the globe?
-var container = document.getElementById( 'globe' );
+function setupGlobe(organizeFun) {
+  // Where to put the globe?
+  var container = document.getElementById( 'globe' );
 
-// Make the globe
-var globe = new DAT.Globe( container, { imgDir: 'img/', colorFn: colorFunction } );
+  // Make the globe
+  var globe = new DAT.Globe( container, { imgDir: 'img/', colorFn: colorFunction } );
 
-// We're going to ask a file for the JSON data.
-var xhr = new XMLHttpRequest();
+  // We're going to ask a file for the JSON data.
+  var xhr = new XMLHttpRequest();
 
-// Where do we get the data?
-xhr.open( 'GET', 'sample-chat-data.json', true );
+  // Where do we get the data?
+  xhr.open( 'GET', 'sample-chat-data.json', true );
 
-// What do we do when we have it?
-xhr.onreadystatechange = function() {
+  // What do we do when we have it?
+  xhr.onreadystatechange = function() {
 
-    // If we've received the data
-    if ( xhr.readyState === 4 && xhr.status === 200 ) {
+      // If we've received the data
+      if ( xhr.readyState === 4 && xhr.status === 200 ) {
 
-        // Parse the JSON
-        var data = JSON.parse( xhr.responseText );
+          // Parse the JSON
+          var data = JSON.parse( xhr.responseText );
 
-        // Tell the globe about your JSON data
-        globe.addData( organizeSurveyData(data), {format: 'magnitude'} );
+          // Tell the globe about your JSON data
+          globe.addData( organizeFun(data), {format: 'magnitude'} );
 
-        // Create the geometry
-        globe.createPoints();
+          // Create the geometry
+          globe.createPoints();
 
-        // Begin animation
-        globe.animate();
+          // Begin animation
+          globe.animate();
 
-    }
+      }
 
+  };
+
+  // Begin request
+  xhr.send( null );
 };
 
-// Begin request
-xhr.send( null );
+function gotoSurvey() {
+  $('nav .active').removeClass('active');
+  $('#nav-survey').addClass('active');
+  setupGlobe(organizeSurveyData);
+}
+
+gotoSurvey();
