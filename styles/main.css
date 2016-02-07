@@ -17,3 +17,8 @@ nav ul {
 nav .active::before {
   content: "> ";
 }
+
+a {
+  color: white;
+  text-decoration: none;
+}
