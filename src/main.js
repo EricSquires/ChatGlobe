@@ -125,4 +125,49 @@ function gotoDuration() {
   setupGlobe(organizeDurationData);
 }
 
+function organizeMessageData(chatData) {
+  var organized = [];
+  var maxVal = 1;
+  
+  _.each(chatData, function(chat) {
+    // Skip any chat items that didn't record the property
+    if(!chat.transcript) {
+      return;
+    }
+    
+    // Look for an existing entry for the latitude and longitude of the current chat item. If we've already recorded
+    // data for that location, simply update that entry
+    var entry = _.find(organized, function(orgEntry) {
+      return chat.latitude === orgEntry.latitude && chat.longitude === orgEntry.longitude;
+    })
+    
+    if(entry) {
+      entry.total_score += chat.transcript.length;
+      
+      if(maxVal < entry.total_score) {
+          maxVal = entry.total_score;
+      }
+    }
+    else {
+      organized.push({ latitude: chat.latitude, longitude: chat.longitude, total_score: chat.transcript.length, total_elements: 1 });
+      
+      if(maxVal < chat.transcript.length) {
+          maxVal = chat.transcript.length;
+      }
+    }
+  });
+  
+  
+  var ret = _.flatten(_.map(organized, function(entry) {
+    // We divide by maxVal here in order to normalize the data and get it to fit better in the globe visualization
+    return [entry.latitude, entry.longitude, entry.total_score / (maxVal * entry.total_elements)]
+  }));
+  return ret;
+}
+
+function gotoTranscripts() {
+    navTo('#nav-transcripts');
+    setupGlobe(organizeMessageData);
+}
+
 gotoSurvey();
